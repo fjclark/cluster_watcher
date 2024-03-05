@@ -6,7 +6,7 @@ import subprocess
 from typing import Tuple, List
 import requests
 import json
-from dotenv import load_dotenv
+from dotenv import load_dotenv, set_key
 
 
 class EnvVarError(Exception):
@@ -57,6 +57,12 @@ def load_from_env(name: str) -> str:
     return value
 
 
+def write_to_env(name: str, value: str) -> None:
+    """Write a value to the dotenv file."""
+    load_dotenv()
+    set_key(".env", name, value)
+
+
 def send_slack_message(token: str, channel: str, message: str) -> None:
     """Send a message to a Slack channel."""
     url = "https://slack.com/api/chat.postMessage"
@@ -72,8 +78,16 @@ def send_slack_message(token: str, channel: str, message: str) -> None:
 def main():
     """Check the nodes in the cluster for GPU issues."""
 
+    # Check if we have already notified about the failure. If so
+    # don't notify again.
+    notified = load_from_env("NOTIFIED")
+    if notified:
+        return
+
+    # Check the nodes for GPU issues
     nodes = [Node(f"node0{i}") for i in range(1, 8)]
     failing_nodes = [node for node in nodes if not node.check_gpus_functional()]
+
     # Send slack message if there are failing nodes
     if failing_nodes:
         slack_token = load_from_env("SLACK_OAUTH_TOKEN")
