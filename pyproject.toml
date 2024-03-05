@@ -6,7 +6,7 @@ description = "A tool to monitor GPU nodes in a cluster"
 authors = [{name = "Finlay Clark"}]
 readme = "README.md"
 requires-python = ">=3.9.0"
-dependencies = ["python-dotenv"]
+dependencies = ["python-dotenv", "requests"]
 
 [build-system]
 requires = ["setuptools>=64.0.0", "wheel"]
