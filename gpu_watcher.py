@@ -75,13 +75,33 @@ def send_slack_message(token: str, channel: str, message: str) -> None:
         print(f"Failed to send message. Error: {response.text}")
 
 
+def parse_args():
+    import argparse
+
+    parser = argparse.ArgumentParser(
+        description="Check the nodes in the cluster for GPU issues."
+    )
+    # Option to reset the notification
+    parser.add_argument(
+        "--reset",
+        action="store_true",
+        help="Reset the notification flag to allow sending messages again.",
+    )
+    return parser.parse_args()
+
+
 def main():
     """Check the nodes in the cluster for GPU issues."""
+    # Check if we just want to reset the notification
+    args = parse_args()
+    if args.reset:
+        write_to_env("NOTIFIED", "False")
+        return
 
     # Check if we have already notified about the failure. If so
     # don't notify again.
     notified = load_from_env("NOTIFIED")
-    if notified:
+    if notified == "True":
         return
 
     # Check the nodes for GPU issues
@@ -101,6 +121,8 @@ def main():
                 slack_channel,
                 f"Node {node.name} failed with error: {node.error_information}",
             )
+        # Set the environment variable to avoid sending multiple messages
+        write_to_env("NOTIFIED", "True")
 
 
 if __name__ == "__main__":
