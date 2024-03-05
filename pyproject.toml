@@ -1,0 +1,21 @@
+
+[project]
+name = "k2dg"
+version = "0.1.0"
+description = "A tool to monitor GPU nodes in a cluster"
+authors = [{name = "Finlay Clark"}]
+readme = "README.md"
+requires-python = ">=3.9.0"
+dependencies = ["python-dotenv"]
+
+[build-system]
+requires = ["setuptools>=64.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project.optional-dependencies]
+test = ["pytest", "pytest-cov"]
+dev = ["black", "flake8", "isort", "pre-commit"]
+
+[project.scripts]
+gpu_check = "gpu_watcher:main"
+
