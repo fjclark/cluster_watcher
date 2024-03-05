@@ -1,6 +1,6 @@
 
 [project]
-name = "k2dg"
+name = "cluster_watcher"
 version = "0.1.0"
 description = "A tool to monitor GPU nodes in a cluster"
 authors = [{name = "Finlay Clark"}]
