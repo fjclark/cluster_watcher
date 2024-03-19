@@ -35,16 +35,23 @@ class Node:
 
     def check_gpus_functional(self) -> bool:
         """Check if the GPUs on this node are functional."""
-        cmd = ["nvidia-smi"]
+        cmd = ["nvidia-smi --list-gpus | wc -l"]
         stdout, stderr = run_remote_cmd(self.name, cmd)
         self.functional = not bool(stderr)
         # If there is an issue, save the error information
         if not self.functional:
             self.error_information["nvidia-smi"] = stderr
-            # Also collect information with dmesg
-            # cmd = ["sudo", "dmesg", "-T", "-l", "warn,err,crit"]
-            # stdout, stderr = run_remote_cmd(self.name, cmd)
-            # self.error_information["dmesg"] = stdout
+        # If less than 4 GPUs found, this is also problematic
+        if int(stdout) < 4:
+            self.functional = False
+            self.error_information["nvidia-smi"] = "Less than 4 GPUs found."
+
+        # If
+        # Also collect information with dmesg
+        # cmd = ["sudo", "dmesg", "-T", "-l", "warn,err,crit"]
+        # stdout, stderr = run_remote_cmd(self.name, cmd)
+        # self.error_information["dmesg"] = stdout
+
         return self.functional
 
 
