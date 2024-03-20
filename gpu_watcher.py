@@ -67,7 +67,7 @@ def load_from_env(name: str) -> str:
 def write_to_env(name: str, value: str) -> None:
     """Write a value to the dotenv file."""
     load_dotenv(find_dotenv())
-    set_key(".env", name, value)
+    set_key(find_dotenv(), name, value)
 
 
 def send_slack_message(token: str, channel: str, message: str) -> None:
