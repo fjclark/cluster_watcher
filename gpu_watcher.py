@@ -6,7 +6,7 @@ import subprocess
 from typing import Tuple, List
 import requests
 import json
-from dotenv import load_dotenv, set_key
+from dotenv import load_dotenv, find_dotenv, set_key
 
 
 class EnvVarError(Exception):
@@ -57,7 +57,7 @@ class Node:
 
 def load_from_env(name: str) -> str:
     """Load a value from the dotenv file."""
-    load_dotenv()
+    load_dotenv(find_dotenv())
     value = os.environ[name]
     if not value:
         raise EnvVarError(f"Environment variable {name} not found.")
@@ -66,7 +66,7 @@ def load_from_env(name: str) -> str:
 
 def write_to_env(name: str, value: str) -> None:
     """Write a value to the dotenv file."""
-    load_dotenv()
+    load_dotenv(find_dotenv())
     set_key(".env", name, value)
 
 
